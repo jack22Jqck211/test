@@ -1,0 +1,31 @@
+{
+  "name": "g2ray",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  },
+  "postAttachCommand": {
+    "expose": "gh codespace ports visibility 443:public -c $CODESPACE_NAME",
+    "start": "sudo tmux new-session -d -s xray '/usr/local/bin/xray run -c /etc/xray/g2ray.json' 2>/dev/null || true",
+    "notify": "bash /usr/local/bin/send_telegram.sh &"
+  },
+  "portsAttributes": {
+    "443": {
+      "label": "g2ray",
+      "protocol": "http",
+      "onAutoForward": "silent"
+    }
+  },
+  "forwardPorts": [443],
+  "hostRequirements": {
+    "cpus": 2
+  }
+}
